@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import tkinter as tk
 import tkinter.ttk as ttk
+import customtkinter as ctk
 
 
 def game():
@@ -21,16 +22,14 @@ def game():
   global is_waiting, text_answer, difficulty
   if difficulty<10: difficulty+= 1
   home_screen_frame.pack_forget()
-  game_frame.pack()
-  anwser_text.config(text = "")
-  next_button.pack_forget()
+  game_frame.pack(expand=True, fill=ctk.BOTH)
+  anwser_text.configure(text = "")
   response = chat_session.send_message(f"You are going to ask another difficult question, that you can anwser with true or false, in around 10 seconds, but it has to be tricky, in a ladder from 0 to 20, use difficulty {difficulty+10}")
   is_waiting = True
-  question_text.config(text= response.text)
+  question_text.configure(text= response.text)
   while is_waiting:
     window.update()
-  next_button.pack()
-  anwser_text.config(text=text_answer)
+  anwser_text.configure(text=text_answer)
     
     
 
@@ -58,9 +57,10 @@ text_answer = ""
 api_key = os.getenv("API_KEY")
 difficulty = 0
 
-window = tk.Tk()
+window = ctk.CTk()
+window.geometry("720x240")
 
-p = ttk.Progressbar(window,orient=tk.HORIZONTAL,length=200,mode="determinate",takefocus=True,maximum=100)
+p = ctk.CTkProgressBar(window,mode="determinate")
 p.start()
 p.pack()
 
@@ -89,31 +89,32 @@ chat_session = model.start_chat(
 
 p.pack_forget()
 
-home_screen_frame = tk.Frame(window)
-home_screen_frame.pack()
-welcome_text = tk.Label(home_screen_frame, text='Welcome to the AI Quiz, a quiz about luck, and mainly logic !')
+home_screen_frame = ctk.CTkFrame(window)
+home_screen_frame.pack(expand=True, fill=ctk.BOTH)
+welcome_text = ctk.CTkLabel(home_screen_frame, text='AI Quiz', )
+welcome_subtext = ctk.CTkLabel(home_screen_frame, text='A quiz to test your knowledge, and your logic spirit', )
 welcome_text.pack()
+welcome_subtext.pack()
 
-start_button = tk.Button(home_screen_frame, text='Start', command=game)
-start_button.pack()
+start_button = ctk.CTkButton(home_screen_frame, text='Start', command=game)
+start_button.pack(side=ctk.BOTTOM, anchor=ctk.SE, padx= 10, pady= 10)
 
-game_frame = tk.Frame(window)
+game_frame = ctk.CTkFrame(window)
 
-question_text = tk.Label(game_frame)
+question_text = ctk.CTkLabel(game_frame)
 question_text.pack()
 
-button_true = tk.Button(game_frame, text="True", command=ansTrue)
-button_true.pack()
-
-button_false = tk.Button(game_frame, text="False", command=ansFalse)
-button_false.pack()
-
-anwser_text = tk.Label(game_frame)
+anwser_text = ctk.CTkLabel(game_frame)
 anwser_text.pack()
-next_button = tk.Button(game_frame, text="Next", command=game)
 
+button_true = ctk.CTkButton(game_frame, text="True", command=ansTrue)
+button_true.pack(side=ctk.LEFT, anchor=ctk.SW, padx= 10, pady= 10)
 
-    
+button_false = ctk.CTkButton(game_frame, text="False", command=ansFalse)
+button_false.pack(side=ctk.LEFT, anchor=ctk.SW, padx= 10, pady= 10)
+
+next_button = ctk.CTkButton(game_frame, text="Next", command=game)
+next_button.pack(side= ctk.BOTTOM, anchor=ctk.SE, padx= 10, pady= 10)
 
 
 
