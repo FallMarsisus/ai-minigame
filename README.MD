@@ -19,7 +19,3 @@ Please ensure that you have a VPN set up and configured properly before running 
 3. Set up your Google Gemini API key.
 4. If required, connect to a VPN for the specific countries mentioned above.
 5. Run the program and follow the instructions provided.
-
-## License
-
-This program is licensed under the MIT License. Please see the [LICENSE](LICENSE) file for more details.

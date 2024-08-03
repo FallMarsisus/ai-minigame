@@ -19,12 +19,18 @@ def game():
   Returns:
     None
   """
-  global is_waiting, text_answer, difficulty
+  global is_waiting, text_answer, difficulty, points
+  if difficulty == 10:
+    home_screen_frame.pack(expand=True, fill=ctk.BOTH)
+    game_frame.pack_forget()
+    welcome_text.configure(text='You have finished the game')
+    welcome_subtext.configure(text=f'You have scored {points} points')
+    return
   if difficulty<10: difficulty+= 1
   home_screen_frame.pack_forget()
   game_frame.pack(expand=True, fill=ctk.BOTH)
   anwser_text.configure(text = "")
-  response = chat_session.send_message(f"You are going to ask another difficult question, that you can anwser with true or false, in around 10 seconds, but it has to be tricky, in a ladder from 0 to 20, use difficulty {difficulty+10}")
+  response = chat_session.send_message(f"You are going to ask another difficult question, that you can anwser with true or false, in around 10 seconds, but it has to be tricky, be sure to have the right answer, in a ladder from 0 to 20, use difficulty {difficulty+10}")
   is_waiting = True
   question_text.configure(text= response.text)
   while is_waiting:
@@ -35,25 +41,32 @@ def game():
 
 
 def ansTrue():
-  global is_waiting, text_answer
+  global is_waiting, text_answer, points
 
   if is_waiting:
     response = chat_session.send_message("1")
     is_waiting = False
     text_answer = response.text
+    if "right" in text_answer or "correct" in text_answer:
+      points+=1
+      points_text.configure(text = "Points: "+str(points))
 
 def ansFalse():
-  global is_waiting, text_answer
+  global is_waiting, text_answer, points
 
   if is_waiting:
     response = chat_session.send_message("2")
     is_waiting = False
     text_answer = response.text
+    if "right" in text_answer or "correct" in text_answer:
+      points+=1
+      points_text.configure(text = "Points: "+str(points))
 
 
 load_dotenv()
 is_waiting = False
 text_answer = ""
+points = 0
 api_key = os.getenv("API_KEY")
 difficulty = 0
 
@@ -100,6 +113,9 @@ start_button = ctk.CTkButton(home_screen_frame, text='Start', command=game)
 start_button.pack(side=ctk.BOTTOM, anchor=ctk.SE, padx= 10, pady= 10)
 
 game_frame = ctk.CTkFrame(window)
+
+points_text = ctk.CTkLabel(game_frame, text=f"Points: {points}")
+points_text.pack(side=ctk.TOP, anchor=ctk.NW, padx= 10, pady= 10)
 
 question_text = ctk.CTkLabel(game_frame)
 question_text.pack()
